@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
@@ -16,14 +16,40 @@ interface ProjectCardProps {
 
 function ProjectCard({ title, category, description, tags, videoSrc, link, delay = 0 }: ProjectCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const hasTouch = window.matchMedia("(pointer: coarse)").matches || 'ontouchstart' in window;
+      setIsMobile(hasTouch || window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile && videoRef.current) {
+      // Small delay to ensure browser allows autoplay under muted condition
+      const timer = setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.play().catch(() => {});
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile]);
 
   const handleMouseEnter = () => {
+    if (isMobile) return;
     if (videoRef.current) {
       videoRef.current.play().catch(() => {});
     }
   };
 
   const handleMouseLeave = () => {
+    if (isMobile) return;
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
@@ -52,6 +78,7 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
             muted
             loop
             playsInline
+            autoPlay={isMobile}
             className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-700 ease-out"
           />
         ) : (
