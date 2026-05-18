@@ -47,7 +47,7 @@ export default function CartaoVisita() {
                 <div className="absolute w-full h-full bg-[#d4af37] blur-[30px] opacity-[0.15] rounded-full" />
                 <img 
                   src="/LogotipoAI.png" 
-                  alt="Caio Rodrigues Premium Logo" 
+                  alt="Caio Rodrigues Logo" 
                   className="w-[90%] h-[90%] object-contain"
                   style={{ filter: 'drop-shadow(0 0 15px rgba(212, 175, 55, 0.4))' }}
                 />
@@ -90,7 +90,7 @@ export default function CartaoVisita() {
                 <div className="w-[25%] aspect-square mb-[10%] flex items-center justify-center">
                   <img 
                     src="/LogotipoAI.png" 
-                    alt="Caio Rodrigues Premium Logo" 
+                    alt="Caio Rodrigues Logo" 
                     className="w-full h-full object-contain"
                     style={{ filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.4))' }}
                   />

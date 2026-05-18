@@ -13,7 +13,7 @@ export default function Logo({ className = "" }: { className?: string }) {
         className="relative w-10 h-10 flex-shrink-0 flex items-center justify-center"
       >
         {/* Logo Gerado por Inteligência Artificial */}
-        <img src="/LogotipoAI.png" alt="Caio Rodrigues Premium Logo" className="w-full h-full object-contain" style={{ filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.4))' }} />
+        <img src="/LogotipoAI.png" alt="Caio Rodrigues Logo" className="w-full h-full object-contain" style={{ filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.4))' }} />
 
         {/* Efeito Glow interativo */}
         <div className="absolute inset-0 bg-[#d4af37] rounded-full blur-[20px] opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
@@ -25,7 +25,7 @@ export default function Logo({ className = "" }: { className?: string }) {
           CAIO<span className="text-gradient-gold ml-1">R.</span>
         </span>
         <span className="text-[10px] tracking-[0.2em] text-[#d4af37]/80 uppercase font-light">
-          Premium Dev
+          Programador / Designer
         </span>
       </div>
     </div>

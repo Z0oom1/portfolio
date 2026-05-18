@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartão de Visita 3D Premium - Caio Rodrigues</title>
+  <title>Cartão de Visita 3D - Caio Rodrigues</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -104,10 +104,21 @@
     }
 
     .text-gradient-gold {
-      background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+      background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c, #bf953f);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: goldShimmer 6s linear infinite;
+    }
+
+    @keyframes goldShimmer {
+      0% {
+        background-position: 0% 0%;
+      }
+      100% {
+        background-position: -200% 0%;
+      }
     }
 
     /* FRONT CARD */
@@ -288,7 +299,7 @@
         <div class="logo-container">
           <div class="logo-glow"></div>
           <!-- NOVO LOGO AI MINIMALISTA -->
-          <img src="main/public/LogotipoAI.png" alt="Caio Rodrigues Premium Logo" class="svg-logo" style="object-fit: cover; border-radius: 50%; box-shadow: 0 0 25px rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.3);">
+          <img src="main/public/LogotipoAI.png" alt="Caio Rodrigues Logo" class="svg-logo" style="object-fit: cover; border-radius: 50%; box-shadow: 0 0 25px rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.3);">
         </div>
         
         <h1>Caio Rodrigues</h1>
@@ -300,7 +311,7 @@
         <div class="back-left">
           <div class="logo-small">
             <!-- NOVO LOGO AI MINIMALISTA -->
-            <img src="main/public/LogotipoAI.png" alt="Caio Rodrigues Premium Logo" class="svg-logo" style="object-fit: cover; border-radius: 50%; box-shadow: 0 0 15px rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.3);">
+            <img src="main/public/LogotipoAI.png" alt="Caio Rodrigues Logo" class="svg-logo" style="object-fit: cover; border-radius: 50%; box-shadow: 0 0 15px rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.3);">
           </div>
           <div class="back-quote">
             "Projetos <span class="text-gradient-gold">ambiciosos</span> merecem execução extraordinária."
