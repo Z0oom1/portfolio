@@ -110,7 +110,7 @@ export default function Projects() {
     {
       title: "Modelo Loja Celular",
       category: "E-Commerce",
-      description: "Plataforma de vendas focada em alta conversão com design refinado, animações suaves e experiência de compra premium para produtos de tecnologia.",
+      description: "Plataforma de vendas focada em alta conversão com design refinado, animações suaves e experiência de compra exclusiva para produtos de tecnologia.",
       tags: ["UI/UX", "Website", "Next.js", "Framer Motion"],
       videoSrc: "/videos/celular.webm",
       link: "https://website-loja-celulares.vercel.app/"
@@ -118,7 +118,7 @@ export default function Projects() {
     {
       title: "Modelo Odonto",
       category: "Institucional",
-      description: "Website premium para clínica odontológica focada em estética de alto padrão, transmitindo luxo, credibilidade e cuidado.",
+      description: "Website profissional para clínica odontológica focada em estética de alto padrão, transmitindo luxo, credibilidade e cuidado.",
       tags: ["Website", "Branding", "React", "TailwindCSS"],
       videoSrc: "/videos/odonto.webm",
       link: "https://modelo-odonto.vercel.app"

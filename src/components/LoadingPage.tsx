@@ -105,7 +105,7 @@ export default function LoadingPage() {
             className="text-[11px] md:text-[13px] text-[rgba(242,242,242,0.5)] tracking-[0.15em] uppercase mt-2"
             style={{ fontFamily: 'Outfit, sans-serif' }}
           >
-            Preparando portfólio premium
+            Preparando portfólio profissional
           </p>
         </div>
       </div>

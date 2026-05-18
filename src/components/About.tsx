@@ -42,7 +42,7 @@ export default function About() {
                 Não construo apenas sites. Desenvolvo experiências digitais de alto valor que combinam uma <strong className="text-foreground font-medium">identidade visual marcante</strong> com <strong className="text-foreground font-medium">engenharia de software robusta</strong>.
               </p>
               <p>
-                Trabalho na intersecção entre design e programação, unindo o melhor dos dois mundos. Cada linha de código e cada pixel têm um propósito: entregar produtos que sejam não apenas funcionais, mas que ofereçam uma sensação <strong className="text-gold font-medium">premium e cinematográfica</strong>.
+                Trabalho na intersecção entre design e programação, unindo o melhor dos dois mundos. Cada linha de código e cada pixel têm um propósito: entregar produtos que sejam não apenas funcionais, mas que ofereçam uma sensação <strong className="text-gold font-medium">exclusiva e cinematográfica</strong>.
               </p>
               <p>
                 Desenvolvo portfólios, softwares sob medida e sistemas complexos. Dou o meu máximo em cada detalhe porque acredito que <strong className="text-foreground font-medium">projetos ambiciosos exigem execução impecável</strong>. Meu objetivo é trabalhar com pessoas e marcas que buscam transcender o comum.
