@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartão de Visita 3D Premium - Caio Rodrigues</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #030303;
+      --bg-surface: #0a0a0a;
+      --text-main: #f2f2f2;
+      --text-muted: rgba(242, 242, 242, 0.6);
+      --gold: #d4af37;
+      --gold-light: #f9e596;
+      --gold-dark: #aa7c11;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .hint {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    /* 3D Container */
+    .scene {
+      width: 950px;
+      height: 550px;
+      perspective: 2000px; /* Stronger 3D depth */
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transform-style: preserve-3d;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
+      border-radius: 20px; /* Arredondamento extra das bordas conforme pedido */
+    }
+
+    .scene.is-flipped .card {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      background: var(--bg-dark);
+      overflow: hidden;
+    }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+      display: flex;
+    }
+
+    /* Subtle texture and glows for both faces */
+    .card-face::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card-face::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* FRONT CARD */
+    .front {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 1; /* For elements inside face */
+    }
+
+    .front .logo-container {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .front .logo-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      background: var(--gold);
+      filter: blur(40px);
+      opacity: 0.15;
+      border-radius: 50%;
+    }
+
+    .front h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 46px;
+      font-weight: 500;
+      letter-spacing: 6px;
+      color: var(--text-main);
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      z-index: 2;
+      position: relative;
+    }
+
+    .front h2 {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 10px;
+      color: var(--gold);
+      margin: 0;
+      text-transform: uppercase;
+      z-index: 2;
+      position: relative;
+    }
+
+    /* BACK CARD */
+    .back-left {
+      width: 45%;
+      padding: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid rgba(212, 175, 55, 0.15);
+      position: relative;
+      z-index: 2;
+    }
+
+    .back-left .logo-small {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 50px;
+    }
+
+    .back-quote {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--text-main);
+    }
+    
+    .back-quote span {
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    .back-right {
+      width: 55%;
+      padding: 80px 80px 80px 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 36px;
+      z-index: 2;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .info-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: var(--gold);
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    .info-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .info-text {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+
+    .info-value.highlight {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      color: var(--gold-light);
+    }
+
+    /* SVG Logo Definition */
+    .svg-logo {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SVG DEFS (Hidden) -->
+  <svg width="0" height="0" style="position: absolute;">
+    <defs>
+      <linearGradient id="gold-metal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#bf953f" />
+        <stop offset="25%" stopColor="#fcf6ba" />
+        <stop offset="50%" stopColor="#b38728" />
+        <stop offset="75%" stopColor="#fbf5b7" />
+        <stop offset="100%" stopColor="#aa771c" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="hint">Clique no cartão para girar</div>
+
+  <div class="scene" id="card-scene">
+    <div class="card" id="card-body">
+      
+      <!-- FRENTE DO CARTÃO -->
+      <div class="card-face front">
+        <div class="logo-container">
+          <div class="logo-glow"></div>
+          <!-- NOVO LOGO AI MINIMALISTA -->
+          <img src="main/public/LogotipoAI.png" alt="Caio Rodrigues Premium Logo" class="svg-logo" style="object-fit: cover; border-radius: 50%; box-shadow: 0 0 25px rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.3);">
+        </div>
+        
+        <h1>Caio Rodrigues</h1>
+        <h2 class="text-gradient-gold">UI/UX & Full Stack Developer</h2>
+      </div>
+
+      <!-- VERSO DO CARTÃO -->
+      <div class="card-face back">
+        <div class="back-left">
+          <div class="logo-small">
+            <!-- NOVO LOGO AI MINIMALISTA -->
+            <img src="main/public/LogotipoAI.png" alt="Caio Rodrigues Premium Logo" class="svg-logo" style="object-fit: cover; border-radius: 50%; box-shadow: 0 0 15px rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.3);">
+          </div>
+          <div class="back-quote">
+            "Projetos <span class="text-gradient-gold">ambiciosos</span> merecem execução extraordinária."
+          </div>
+        </div>
+
+        <div class="back-right">
+          
+          <!-- Phone -->
+          <div class="info-item">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="info-text">
+              <span class="info-label">WhatsApp</span>
+              <span class="info-value">+55 18 99639-2316</span>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="info-item">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div class="info-text">
+              <span class="info-label">Email</span>
+              <span class="info-value">caioprivado01@gmail.com</span>
+            </div>
+          </div>
+
+          <!-- Portfolio / Site -->
+          <div class="info-item">
+            <div class="info-icon" style="background: var(--gold); color: var(--bg-dark); border-color: var(--gold);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <div class="info-text">
+              <span class="info-label text-gradient-gold">Projetos & Portfólio</span>
+              <span class="info-value highlight">portfolio-caio-rod.vercel.app</span>
+            </div>
+          </div>
+
+          <!-- Socials -->
+          <div class="info-item">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            </div>
+            <div class="info-text">
+              <span class="info-label">Redes</span>
+              <span class="info-value" style="font-size: 16px;">IN/caio-rodss &nbsp;|&nbsp; @caio.riguess</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scene = document.getElementById('card-scene');
+    scene.addEventListener('click', function() {
+      scene.classList.toggle('is-flipped');
+    });
+  </script>
+</body>
+</html>
