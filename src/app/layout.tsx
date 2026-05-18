@@ -16,6 +16,10 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Caio Rodrigues | UI/UX & Full Stack Developer",
   description: "Projetos ambiciosos merecem execução extraordinária. Portfólio de Caio Rodrigues.",
+  icons: {
+    icon: "/LogotipoAI.png",
+    apple: "/LogotipoAI.png",
+  },
 };
 
 export default function RootLayout({
