@@ -29,15 +29,36 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Force DOM-level muting to completely bypass the React muted DOM rendering bug on iOS Safari
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+    }
+  }, []);
+
   useEffect(() => {
     if (isMobile && videoRef.current) {
-      // Small delay to ensure browser allows autoplay under muted condition
-      const timer = setTimeout(() => {
+      const playVideo = () => {
         if (videoRef.current) {
+          videoRef.current.defaultMuted = true;
+          videoRef.current.muted = true;
           videoRef.current.play().catch(() => {});
         }
-      }, 100);
-      return () => clearTimeout(timer);
+      };
+
+      // Try playing immediately after mounting/detection
+      playVideo();
+
+      // Add backup event listeners to trigger play as soon as the media can be decoded
+      const videoEl = videoRef.current;
+      videoEl.addEventListener("loadedmetadata", playVideo);
+      videoEl.addEventListener("canplay", playVideo);
+
+      return () => {
+        videoEl.removeEventListener("loadedmetadata", playVideo);
+        videoEl.removeEventListener("canplay", playVideo);
+      };
     }
   }, [isMobile]);
 
@@ -74,13 +95,14 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
         {videoSrc ? (
           <video
             ref={videoRef}
-            src={videoSrc}
             muted
             loop
             playsInline
             autoPlay={isMobile}
             className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-700 ease-out"
-          />
+          >
+            <source src={`${videoSrc}#t=0.001`} type="video/webm" />
+          </video>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-surface to-surface-hover flex items-center justify-center relative transform group-hover:scale-105 transition-transform duration-700">
              <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
