@@ -239,6 +239,16 @@ function ProjectCard({
   );
 }
 
+interface RestrictedProjectData {
+  title: string;
+  description: string;
+  videoSrc: string;
+  hoverColor: "wilson" | "cebola" | "imports" | "sorriso";
+  companyName: string;
+  logoSrc?: string;
+  isSvgLogo?: boolean;
+}
+
 export default function Projects() {
   const featuredProjects: ProjectCardProps[] = [
     {
@@ -278,22 +288,129 @@ export default function Projects() {
   const [showCebolas, setShowCebolas] = useState(false);
   const [showImports, setShowImports] = useState(false);
   const [showSorriso, setShowSorriso] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastColor, setToastColor] = useState<"red" | "emerald" | "white" | "sky">("red");
 
-  // Auto-hide toast after 5 seconds
-  useEffect(() => {
-    if (toastMessage) {
-      const timer = setTimeout(() => {
-        setToastMessage(null);
-      }, 5000);
-      return () => clearTimeout(timer);
+  // Restricted Project Preview States
+  const [selectedRestricted, setSelectedRestricted] = useState<RestrictedProjectData | null>(null);
+  const [isPlayingPreview, setIsPlayingPreview] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (previewVideoRef.current) {
+      if (isPlaying) {
+        previewVideoRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        previewVideoRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
     }
-  }, [toastMessage]);
+  };
 
-  const triggerToast = (message: string, color: "red" | "emerald" | "white" | "sky") => {
-    setToastColor(color);
-    setToastMessage(message);
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
+    if (previewVideoRef.current) {
+      previewVideoRef.current.currentTime = newTime;
+    }
+  };
+
+  const toggleMute = () => {
+    if (previewVideoRef.current) {
+      previewVideoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (previewVideoRef.current) {
+      if (previewVideoRef.current.requestFullscreen) {
+        previewVideoRef.current.requestFullscreen();
+      } else if ((previewVideoRef.current as any).webkitRequestFullscreen) {
+        (previewVideoRef.current as any).webkitRequestFullscreen();
+      } else if ((previewVideoRef.current as any).mozRequestFullScreen) {
+        (previewVideoRef.current as any).mozRequestFullScreen();
+      }
+    }
+  };
+
+  const formatTime = (time: number) => {
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  const closeModal = () => {
+    setSelectedRestricted(null);
+    setIsPlayingPreview(false);
+    setIsPlaying(true);
+    setCurrentTime(0);
+    setDuration(0);
+    setIsMuted(true);
+  };
+
+  // Keyboard shortcut listener inside video player
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isPlayingPreview) return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === "ArrowLeft") {
+        if (previewVideoRef.current) {
+          previewVideoRef.current.currentTime = Math.max(0, previewVideoRef.current.currentTime - 5);
+        }
+      } else if (e.code === "ArrowRight") {
+        if (previewVideoRef.current) {
+          previewVideoRef.current.currentTime = Math.min(duration, previewVideoRef.current.currentTime + 5);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPlayingPreview, isPlaying, duration]);
+
+  const themeMap = {
+    wilson: {
+      border: "border-red-500/20",
+      glow: "shadow-[0_0_50px_rgba(239,68,68,0.15)]",
+      text: "text-red-500",
+      bgButton: "bg-red-500 hover:bg-red-600 text-white shadow-[0_0_20px_rgba(239,68,68,0.35)]",
+      progressFill: "text-red-500 accent-red-500",
+      progressColor: "#ef4444",
+      iconBg: "bg-red-500/10 border-red-500/30 text-red-500",
+    },
+    cebola: {
+      border: "border-emerald-500/20",
+      glow: "shadow-[0_0_50px_rgba(16,185,129,0.12),0_0_50px_rgba(245,158,11,0.08)]",
+      text: "text-emerald-400",
+      bgButton: "bg-gradient-to-r from-emerald-500 to-amber-500 hover:opacity-90 text-white shadow-[0_0_20px_rgba(16,185,129,0.25)]",
+      progressFill: "text-emerald-400 accent-emerald-400",
+      progressColor: "#10b981",
+      iconBg: "bg-emerald-500/10 border-emerald-500/30 text-emerald-400",
+    },
+    imports: {
+      border: "border-white/20",
+      glow: "shadow-[0_0_50px_rgba(255,255,255,0.08)]",
+      text: "text-white",
+      bgButton: "bg-white hover:bg-neutral-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.25)]",
+      progressFill: "text-white accent-white",
+      progressColor: "#ffffff",
+      iconBg: "bg-white/10 border-white/30 text-white",
+    },
+    sorriso: {
+      border: "border-sky-500/20",
+      glow: "shadow-[0_0_50px_rgba(56,189,248,0.12),0_0_50px_rgba(37,99,235,0.08)]",
+      text: "text-sky-400",
+      bgButton: "bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white shadow-[0_0_20px_rgba(56,189,248,0.25)]",
+      progressFill: "text-sky-400 accent-sky-400",
+      progressColor: "#38bdf8",
+      iconBg: "bg-sky-500/10 border-sky-500/30 text-sky-400",
+    }
   };
 
   return (
@@ -489,7 +606,16 @@ export default function Projects() {
                       hoverColor="wilson"
                       layout="vertical"
                       privacyRestricted={true}
-                      onRestrictedClick={() => triggerToast("O acesso ao projeto AW IDEN está fechado por motivos de privacidade e segurança da Alimentos Wilson.", "red")}
+                      onRestrictedClick={() => {
+                        setSelectedRestricted({
+                          title: "AW IDEN",
+                          description: "Sistema avançado de controle e identificação de produtos utilizado pelo almoxarifado da Alimentos Wilson, integrando e gerenciando todo o estoque de forma ágil e segura.",
+                          videoSrc: "/videos/iden.mp4",
+                          hoverColor: "wilson",
+                          companyName: "Alimentos Wilson",
+                          logoSrc: "https://www.alimentoswilson.com.br/imgs/logo-wilson.png"
+                        });
+                      }}
                     />
                   </div>
                 </motion.div>
@@ -540,7 +666,16 @@ export default function Projects() {
                       hoverColor="cebola"
                       layout="vertical"
                       privacyRestricted={true}
-                      onRestrictedClick={() => triggerToast("O acesso ao Portal M&M está fechado por motivos de privacidade e segredo comercial da M & M Cebolas.", "emerald")}
+                      onRestrictedClick={() => {
+                        setSelectedRestricted({
+                          title: "Portal M&M",
+                          description: "Sistema corporativo avançado para controle de estoque, compras, vendas de cebolas e produtos agrícolas, integrando faturamento de notas fiscais e software dedicado.",
+                          videoSrc: "/videos/cebolas.mp4",
+                          hoverColor: "cebola",
+                          companyName: "M & M Cebolas",
+                          isSvgLogo: true
+                        });
+                      }}
                     />
                   </div>
                 </motion.div>
@@ -583,7 +718,16 @@ export default function Projects() {
                       hoverColor="imports"
                       layout="vertical"
                       privacyRestricted={true}
-                      onRestrictedClick={() => triggerToast("O acesso ao sistema Imports Control está fechado por motivos de privacidade e segurança da Imports.", "white")}
+                      onRestrictedClick={() => {
+                        setSelectedRestricted({
+                          title: "Imports Control",
+                          description: "Sistema completo de controle de estoque de uma loja de celulares e venda de produtos Apple, permitindo gerenciar o exato modelo, cor e informações de cada aparelho, além de registrar e rastrear defeitos físicos de produtos seminovos/usados.",
+                          videoSrc: "/videos/imports.mp4",
+                          hoverColor: "imports",
+                          companyName: "Imports",
+                          logoSrc: "/imports.png"
+                        });
+                      }}
                     />
                   </div>
                 </motion.div>
@@ -626,7 +770,16 @@ export default function Projects() {
                       hoverColor="sorriso"
                       layout="vertical"
                       privacyRestricted={true}
-                      onRestrictedClick={() => triggerToast("O acesso ao Portal Odonto NS está restrito a funcionários autorizados e pacientes da Clínica Novo Sorriso.", "sky")}
+                      onRestrictedClick={() => {
+                        setSelectedRestricted({
+                          title: "Portal Odonto NS",
+                          description: "Software e site para a clínica odontológica Novo Sorriso. Trata-se de um sistema completo de controle de consultas e gestão interna que monitora os pacientes da clínica, integrado a um app e site onde o próprio cliente pode realizar agendamentos em dias disponibilizados pela administração.",
+                          videoSrc: "/videos/novosorriso.mp4",
+                          hoverColor: "sorriso",
+                          companyName: "Novo Sorriso",
+                          logoSrc: "/logo.png"
+                        });
+                      }}
                     />
                   </div>
                 </motion.div>
@@ -636,49 +789,222 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* Floating Privacy Toast Alert */}
+      {/* Interactive Privacy & Preview Modal */}
       <AnimatePresence>
-        {toastMessage && (
+        {selectedRestricted && (
           <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-5 rounded-2xl glass border max-w-sm flex items-center gap-4 ${
-              toastColor === 'emerald' 
-                ? 'border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.25)]' 
-                : toastColor === 'white'
-                ? 'border-white/30 shadow-[0_0_30px_rgba(255,255,255,0.15)]'
-                : toastColor === 'sky'
-                ? 'border-sky-500/30 shadow-[0_0_30px_rgba(56,189,248,0.25)]'
-                : 'border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]'
-            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+            onClick={closeModal}
           >
-            <div className={`w-10 h-10 rounded-full border flex items-center justify-center shrink-0 ${
-              toastColor === 'emerald'
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                : toastColor === 'white'
-                ? 'bg-white/10 border-white/30 text-white'
-                : toastColor === 'sky'
-                ? 'bg-sky-500/10 border-sky-500/30 text-sky-400'
-                : 'bg-red-500/10 border-red-500/30 text-red-500'
-            }`}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </div>
-            <div>
-              <h4 className={`font-heading font-medium text-sm ${
-                toastColor === 'emerald' 
-                  ? 'text-emerald-400' 
-                  : toastColor === 'white'
-                  ? 'text-white'
-                  : toastColor === 'sky'
-                  ? 'text-sky-400'
-                  : 'text-red-500'
-              }`}>Acesso Restrito</h4>
-              <p className="text-foreground/70 font-light text-xs mt-1">{toastMessage}</p>
-            </div>
+            <motion.div
+              initial={{ scale: 0.93, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.93, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 180 }}
+              className={`w-full max-w-2xl glass border rounded-3xl overflow-hidden relative ${themeMap[selectedRestricted.hoverColor].border} ${themeMap[selectedRestricted.hoverColor].glow}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-foreground/75 hover:text-white hover:bg-white/10 transition-all duration-300 cursor-pointer"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+
+              {!isPlayingPreview ? (
+                /* 1. Privacy Blocking & Preview Launch Screen */
+                <div className="p-8 md:p-12 flex flex-col items-center text-center">
+                  {/* Lock circle icon with pulsing shadow */}
+                  <div className={`w-16 h-16 rounded-full border flex items-center justify-center mb-6 animate-pulse ${themeMap[selectedRestricted.hoverColor].iconBg}`}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </div>
+
+                  <span className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 ${themeMap[selectedRestricted.hoverColor].text}`}>
+                    {selectedRestricted.companyName}
+                  </span>
+                  
+                  <h3 className="text-2xl md:text-3xl font-heading font-medium text-white mb-4">
+                    {selectedRestricted.title}
+                  </h3>
+
+                  <p className="text-foreground/70 font-light text-sm md:text-base max-w-md mb-8 leading-relaxed">
+                    Por motivos de diretrizes estritas de confidencialidade e privacidade comercial da <strong className="text-white font-medium">{selectedRestricted.companyName}</strong>, o ambiente online e código-fonte deste projeto são restritos a usuários autorizados.
+                  </p>
+
+                  <div className="flex flex-col gap-4 w-full justify-center max-w-xs">
+                    <button
+                      onClick={() => setIsPlayingPreview(true)}
+                      className={`px-8 py-3.5 rounded-full font-medium text-sm flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 transform active:scale-95 ${themeMap[selectedRestricted.hoverColor].bgButton}`}
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                      Visualizar Preview (Vídeo)
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* 2. Custom Styled Video Player Screen */
+                <div className="relative aspect-[16/9] w-full bg-black group overflow-hidden">
+                  <video
+                    ref={previewVideoRef}
+                    src={selectedRestricted.videoSrc}
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-contain"
+                    onTimeUpdate={() => {
+                      if (previewVideoRef.current) {
+                        setCurrentTime(previewVideoRef.current.currentTime);
+                      }
+                    }}
+                    onLoadedMetadata={() => {
+                      if (previewVideoRef.current) {
+                        setDuration(previewVideoRef.current.duration);
+                      }
+                    }}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onClick={togglePlay}
+                  />
+
+                  {/* Voltar button overlay */}
+                  <button
+                    onClick={() => {
+                      setIsPlayingPreview(false);
+                      setIsPlaying(true);
+                      setCurrentTime(0);
+                    }}
+                    className="absolute top-4 left-4 z-20 px-4 py-2 rounded-full bg-black/60 border border-white/10 flex items-center gap-2 text-white hover:bg-black/80 transition-colors text-xs cursor-pointer font-medium backdrop-blur-sm"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <line x1="19" y1="12" x2="5" y2="12"></line>
+                      <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Voltar
+                  </button>
+
+                  {/* Custom controls bar */}
+                  <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                    
+                    {/* Scrub bar */}
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-mono text-white/70 select-none">
+                        {formatTime(currentTime)}
+                      </span>
+                      
+                      <input
+                        type="range"
+                        min="0"
+                        max={duration || 100}
+                        step="0.01"
+                        value={currentTime}
+                        onChange={handleProgressChange}
+                        className={`flex-1 h-1.5 rounded-lg appearance-none cursor-pointer bg-white/20 ${themeMap[selectedRestricted.hoverColor].progressFill}`}
+                        style={{
+                          background: `linear-gradient(to right, ${themeMap[selectedRestricted.hoverColor].progressColor} 0%, ${themeMap[selectedRestricted.hoverColor].progressColor} ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.2) ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.2) 100%)`
+                        }}
+                      />
+                      
+                      <span className="text-[10px] font-mono text-white/70 select-none">
+                        {formatTime(duration)}
+                      </span>
+                    </div>
+
+                    {/* Controls row */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-5">
+                        {/* Play/Pause Button */}
+                        <button
+                          onClick={togglePlay}
+                          className="text-white hover:text-white/80 transition-colors cursor-pointer"
+                        >
+                          {isPlaying ? (
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                              <rect x="6" y="4" width="4" height="16"></rect>
+                              <rect x="14" y="4" width="4" height="16"></rect>
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                          )}
+                        </button>
+
+                        {/* Mute/Unmute */}
+                        <button
+                          onClick={toggleMute}
+                          className="text-white hover:text-white/80 transition-colors cursor-pointer"
+                        >
+                          {isMuted ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5">
+                              <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"></path>
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5">
+                              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            </svg>
+                          )}
+                        </button>
+
+                        {/* Voltar 5s */}
+                        <button
+                          onClick={() => {
+                            if (previewVideoRef.current) {
+                              previewVideoRef.current.currentTime = Math.max(0, previewVideoRef.current.currentTime - 5);
+                            }
+                          }}
+                          className="text-white/70 hover:text-white transition-colors cursor-pointer"
+                          title="Voltar 5s"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                            <path d="M2.5 2v6h6M21.15 13A9 9 0 0 0 5.7 6.88L2.5 10"></path>
+                          </svg>
+                        </button>
+
+                        {/* Avançar 5s */}
+                        <button
+                          onClick={() => {
+                            if (previewVideoRef.current) {
+                              previewVideoRef.current.currentTime = Math.min(duration, previewVideoRef.current.currentTime + 5);
+                            }
+                          }}
+                          className="text-white/70 hover:text-white transition-colors cursor-pointer"
+                          title="Avançar 5s"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                            <path d="M21.5 2v6h-6M2.85 13A9 9 0 0 1 18.3 6.88L21.5 10"></path>
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        {/* Fullscreen Button */}
+                        <button
+                          onClick={toggleFullscreen}
+                          className="text-white/70 hover:text-white transition-colors cursor-pointer"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
