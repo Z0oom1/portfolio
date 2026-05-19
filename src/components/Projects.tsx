@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 interface ProjectCardProps {
@@ -12,10 +12,25 @@ interface ProjectCardProps {
   videoSrc?: string;
   link?: string;
   delay?: number;
-  hoverColor?: "odonto" | "celular" | "academia";
+  hoverColor?: "odonto" | "celular" | "academia" | "wilson";
+  layout?: "horizontal" | "vertical";
+  privacyRestricted?: boolean;
+  onRestrictedClick?: () => void;
 }
 
-function ProjectCard({ title, category, description, tags, videoSrc, link, delay = 0, hoverColor }: ProjectCardProps) {
+function ProjectCard({ 
+  title, 
+  category, 
+  description, 
+  tags, 
+  videoSrc, 
+  link, 
+  delay = 0, 
+  hoverColor,
+  layout = "horizontal",
+  privacyRestricted = false,
+  onRestrictedClick
+}: ProjectCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -93,6 +108,10 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
     academia: {
       border: "group-hover:border-[#00D2FF]/50",
       shadow: "group-hover:shadow-[0_0_25px_rgba(0,210,255,0.15)]",
+    },
+    wilson: {
+      border: "group-hover:border-red-500/50",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(239,68,68,0.25)]",
     }
   };
 
@@ -102,7 +121,12 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex flex-col md:flex-row gap-8 p-6 md:p-8 rounded-3xl glass border border-white/5 hover:border-gold/30 transition-all duration-500 overflow-hidden"
+      onClick={privacyRestricted ? onRestrictedClick : undefined}
+      className={`group relative flex ${layout === "vertical" ? "flex-col" : "flex-col md:flex-row"} gap-8 p-6 md:p-8 rounded-3xl glass border border-white/5 hover:border-gold/30 transition-all duration-500 overflow-hidden ${
+        privacyRestricted ? "cursor-pointer" : ""
+      } ${
+        hoverColor ? `${colorMap[hoverColor].border} ${colorMap[hoverColor].shadow}` : "group-hover:border-gold/30"
+      }`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -110,7 +134,7 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Video / Visual Section */}
-      <div className={`w-full md:w-2/5 aspect-[4/3] md:aspect-auto md:h-64 rounded-2xl overflow-hidden bg-surface-hover relative border border-white/5 transition-all duration-500 ease-out z-10 ${
+      <div className={`w-full ${layout === "vertical" ? "aspect-[16/9]" : "md:w-2/5 aspect-[4/3] md:aspect-auto md:h-64"} rounded-2xl overflow-hidden bg-surface-hover relative border border-white/5 transition-all duration-500 ease-out z-10 ${
         hoverColor ? `${colorMap[hoverColor].border} ${colorMap[hoverColor].shadow}` : "group-hover:border-gold/30"
       }`}>
         {videoSrc && !videoError ? (
@@ -136,17 +160,26 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
       </div>
 
       {/* Content Section */}
-      <div className="w-full md:w-3/5 flex flex-col justify-center relative z-10">
+      <div className={`w-full ${layout === "vertical" ? "" : "md:w-3/5"} flex flex-col justify-center relative z-10`}>
         <div className="flex justify-between items-start mb-4">
           <div>
-            <p className="text-gold text-xs font-medium tracking-widest uppercase mb-2">{category}</p>
+            <p className={`${hoverColor === 'wilson' ? 'text-red-500' : 'text-gold'} text-xs font-medium tracking-widest uppercase mb-2`}>{category}</p>
             <h3 className="text-2xl md:text-3xl font-heading font-medium text-foreground group-hover:text-white transition-colors">
               {title}
             </h3>
           </div>
-          {link && (
+          {link && !privacyRestricted && (
             <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-gold group-hover:border-gold transition-all duration-300 transform group-hover:scale-110">
               <ArrowUpRight className="w-5 h-5 text-foreground group-hover:text-background transition-colors" />
+            </div>
+          )}
+          {privacyRestricted && (
+            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-red-500 group-hover:border-red-500 transition-all duration-300 transform group-hover:scale-110">
+              {/* Lock icon */}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-foreground group-hover:text-white transition-colors">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
             </div>
           )}
         </div>
@@ -166,12 +199,12 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
     </motion.div>
   );
 
-  return link ? (
+  return link && !privacyRestricted ? (
     <a href={link} target="_blank" rel="noopener noreferrer" className="block focus:outline-none">
       {content}
     </a>
   ) : (
-    <div className="block cursor-default">
+    <div className="block focus:outline-none">
       {content}
     </div>
   );
@@ -209,9 +242,21 @@ export default function Projects() {
   ];
 
   const otherProjects = [
-    "Alimentos Wilson", "M & M Cebolas", "Imports", "Renove", 
-    "Controladoria AW", "Conferente AW", "etc..."
+    "Alimentos Wilson", "M & M Cebolas", "Imports", "Renove", "etc..."
   ];
+
+  const [showAlimentosWilson, setShowAlimentosWilson] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Auto-hide toast after 5 seconds
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   return (
     <section id="projetos" className="py-32 relative">
@@ -247,23 +292,112 @@ export default function Projects() {
             <h3 className="text-xl font-heading font-medium text-foreground mb-6 flex items-center gap-3">
               Outras colaborações e sistemas <span className="h-[1px] flex-1 bg-gradient-to-r from-white/20 to-transparent block ml-4"></span>
             </h3>
+            
             <div className="flex flex-wrap gap-4">
-              {otherProjects.map((name, i) => (
-                <motion.div
-                  key={name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
-                  className="px-5 py-2.5 rounded-full bg-surface-hover border border-white/5 text-foreground/70 font-light text-sm hover:text-white hover:border-gold/30 hover:bg-white/5 transition-all duration-300 cursor-default"
-                >
-                  {name}
-                </motion.div>
-              ))}
+              {otherProjects.map((name, i) => {
+                const isAlimentosWilson = name === "Alimentos Wilson";
+                if (isAlimentosWilson) {
+                  return (
+                    <motion.button
+                      key={name}
+                      onClick={() => setShowAlimentosWilson(!showAlimentosWilson)}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
+                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                        showAlimentosWilson 
+                          ? "bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]" 
+                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-red-400 hover:border-red-500/40 hover:bg-red-500/5 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)]"
+                      }`}
+                    >
+                      {name}
+                    </motion.button>
+                  );
+                }
+                return (
+                  <motion.div
+                    key={name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
+                    className="px-5 py-2.5 rounded-full bg-surface-hover border border-white/5 text-foreground/70 font-light text-sm hover:text-white hover:border-gold/30 hover:bg-white/5 transition-all duration-300 cursor-default"
+                  >
+                    {name}
+                  </motion.div>
+                );
+              })}
             </div>
+
+            {/* Alimentos Wilson Expanded Section */}
+            <AnimatePresence>
+              {showAlimentosWilson && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 40 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden border-t border-white/5 pt-8"
+                >
+                  {/* Logo and Title */}
+                  <div className="flex flex-col items-center justify-center mb-8 gap-3">
+                    <motion.img 
+                      src="https://www.alimentoswilson.com.br/imgs/logo-wilson.png" 
+                      alt="Alimentos Wilson"
+                      className="h-14 md:h-16 object-contain filter drop-shadow-[0_0_15px_rgba(239,68,68,0.25)]"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    />
+                    <p className="text-red-500 text-[10px] font-semibold tracking-[0.2em] uppercase">
+                      Acesso Restrito / Sistemas Internos
+                    </p>
+                  </div>
+
+                  {/* Sub-projects list */}
+                  <div className="max-w-xl mx-auto">
+                    <ProjectCard 
+                      title="AW IDEN"
+                      category="Sistema de Identificação de Produtos"
+                      description="Sistema avançado de controle e identificação de produtos utilizado pelo almoxarifado da Alimentos Wilson, integrando e gerenciando todo o estoque de forma ágil e segura."
+                      tags={["Logística", "Estoque", "AW Almoxarifado", "Segurança"]}
+                      videoSrc="/videos/iden.webm"
+                      hoverColor="wilson"
+                      layout="vertical"
+                      privacyRestricted={true}
+                      onRestrictedClick={() => setToastMessage("O acesso ao projeto AW IDEN está fechado por motivos de privacidade e segurança da Alimentos Wilson.")}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </div>
+
+      {/* Floating Privacy Toast Alert */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-5 rounded-2xl glass border border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)] max-w-sm flex items-center gap-4"
+          >
+            <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div>
+              <h4 className="text-red-500 font-heading font-medium text-sm">Acesso Restrito</h4>
+              <p className="text-foreground/70 font-light text-xs mt-1">{toastMessage}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
