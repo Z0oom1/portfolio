@@ -12,7 +12,7 @@ interface ProjectCardProps {
   videoSrc?: string;
   link?: string;
   delay?: number;
-  hoverColor?: "odonto" | "celular" | "academia" | "wilson" | "cebola";
+  hoverColor?: "odonto" | "celular" | "academia" | "wilson" | "cebola" | "imports";
   layout?: "horizontal" | "vertical";
   privacyRestricted?: boolean;
   onRestrictedClick?: () => void;
@@ -116,6 +116,10 @@ function ProjectCard({
     cebola: {
       border: "group-hover:border-emerald-500/40 group-hover:border-r-amber-500/40",
       shadow: "group-hover:shadow-[0_0_25px_rgba(16,185,129,0.15),0_0_25px_rgba(245,158,11,0.1)]",
+    },
+    imports: {
+      border: "group-hover:border-white/40",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(255,255,255,0.12)]",
     }
   };
 
@@ -172,6 +176,8 @@ function ProjectCard({
                 ? 'text-red-500' 
                 : hoverColor === 'cebola'
                 ? 'text-emerald-400'
+                : hoverColor === 'imports'
+                ? 'text-white/80 font-medium'
                 : 'text-gold'
             } text-xs font-medium tracking-widest uppercase mb-2`}>{category}</p>
             <h3 className="text-2xl md:text-3xl font-heading font-medium text-foreground group-hover:text-white transition-colors">
@@ -187,10 +193,12 @@ function ProjectCard({
             <div className={`w-12 h-12 rounded-full border border-white/10 flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 ${
               hoverColor === 'cebola' 
                 ? 'group-hover:bg-emerald-600 group-hover:border-emerald-600' 
+                : hoverColor === 'imports'
+                ? 'group-hover:bg-white group-hover:border-white group-hover:text-black'
                 : 'group-hover:bg-red-500 group-hover:border-red-500'
             }`}>
               {/* Lock icon */}
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-foreground group-hover:text-white transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-foreground group-hover:text-inherit transition-colors">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
@@ -261,8 +269,9 @@ export default function Projects() {
 
   const [showAlimentosWilson, setShowAlimentosWilson] = useState(false);
   const [showCebolas, setShowCebolas] = useState(false);
+  const [showImports, setShowImports] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastColor, setToastColor] = useState<"red" | "emerald">("red");
+  const [toastColor, setToastColor] = useState<"red" | "emerald" | "white">("red");
 
   // Auto-hide toast after 5 seconds
   useEffect(() => {
@@ -274,7 +283,7 @@ export default function Projects() {
     }
   }, [toastMessage]);
 
-  const triggerToast = (message: string, color: "red" | "emerald") => {
+  const triggerToast = (message: string, color: "red" | "emerald" | "white") => {
     setToastColor(color);
     setToastMessage(message);
   };
@@ -318,6 +327,7 @@ export default function Projects() {
               {otherProjects.map((name, i) => {
                 const isAlimentosWilson = name === "Alimentos Wilson";
                 const isCebolas = name === "M & M Cebolas";
+                const isImports = name === "Imports";
                 
                 if (isAlimentosWilson) {
                   return (
@@ -326,6 +336,7 @@ export default function Projects() {
                       onClick={() => {
                         setShowAlimentosWilson(!showAlimentosWilson);
                         setShowCebolas(false);
+                        setShowImports(false);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -349,6 +360,7 @@ export default function Projects() {
                       onClick={() => {
                         setShowCebolas(!showCebolas);
                         setShowAlimentosWilson(false);
+                        setShowImports(false);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -358,6 +370,30 @@ export default function Projects() {
                         showCebolas 
                           ? "bg-gradient-to-r from-emerald-500/10 to-amber-500/10 border-l-emerald-500 border-r-amber-500 border-t-emerald-500 border-b-amber-500 border text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.25),0_0_20px_rgba(245,158,11,0.15)]" 
                           : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-emerald-400 hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                      }`}
+                    >
+                      {name}
+                    </motion.button>
+                  );
+                }
+
+                if (isImports) {
+                  return (
+                    <motion.button
+                      key={name}
+                      onClick={() => {
+                        setShowImports(!showImports);
+                        setShowAlimentosWilson(false);
+                        setShowCebolas(false);
+                      }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
+                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                        showImports 
+                          ? "bg-white/10 border-white/50 text-white shadow-[0_0_20px_rgba(255,255,255,0.3)]" 
+                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-white hover:border-white/40 hover:bg-white/5 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
                       }`}
                     >
                       {name}
@@ -473,6 +509,49 @@ export default function Projects() {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Imports Expanded Section */}
+            <AnimatePresence>
+              {showImports && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 40 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden border-t border-white/5 pt-8"
+                >
+                  {/* Logo and Title */}
+                  <div className="flex flex-col items-center justify-center mb-8 gap-3">
+                    <motion.img 
+                      src="/imports.png" 
+                      alt="Imports Logo"
+                      className="h-14 md:h-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    />
+                    <p className="text-white/80 text-[10px] font-semibold tracking-[0.2em] uppercase">
+                      Acesso Restrito / Sistemas Comerciais
+                    </p>
+                  </div>
+
+                  {/* Sub-projects list */}
+                  <div className="max-w-xl mx-auto">
+                    <ProjectCard 
+                      title="Imports Control"
+                      category="Sistema de Controle & Vendas"
+                      description="Sistema completo de controle de estoque de uma loja de celulares e venda de produtos Apple, permitindo gerenciar o exato modelo, cor e informações de cada aparelho, além de registrar e rastrear defeitos físicos de produtos seminovos/usados."
+                      tags={["Estoque", "Loja de Celular", "Apple Control", "ERP Comercial"]}
+                      videoSrc="/videos/imports.webm"
+                      hoverColor="imports"
+                      layout="vertical"
+                      privacyRestricted={true}
+                      onRestrictedClick={() => triggerToast("O acesso ao sistema Imports Control está fechado por motivos de privacidade e segurança da Imports.", "white")}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </div>
@@ -484,15 +563,19 @@ export default function Projects() {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-5 rounded-2xl glass border shadow-[0_0_30px_rgba(16,185,129,0.2)] max-w-sm flex items-center gap-4 ${
+            className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-5 rounded-2xl glass border max-w-sm flex items-center gap-4 ${
               toastColor === 'emerald' 
                 ? 'border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.25)]' 
+                : toastColor === 'white'
+                ? 'border-white/30 shadow-[0_0_30px_rgba(255,255,255,0.15)]'
                 : 'border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]'
             }`}
           >
             <div className={`w-10 h-10 rounded-full border flex items-center justify-center shrink-0 ${
               toastColor === 'emerald'
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : toastColor === 'white'
+                ? 'bg-white/10 border-white/30 text-white'
                 : 'bg-red-500/10 border-red-500/30 text-red-500'
             }`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -502,7 +585,11 @@ export default function Projects() {
             </div>
             <div>
               <h4 className={`font-heading font-medium text-sm ${
-                toastColor === 'emerald' ? 'text-emerald-400' : 'text-red-500'
+                toastColor === 'emerald' 
+                  ? 'text-emerald-400' 
+                  : toastColor === 'white'
+                  ? 'text-white'
+                  : 'text-red-500'
               }`}>Acesso Restrito</h4>
               <p className="text-foreground/70 font-light text-xs mt-1">{toastMessage}</p>
             </div>
