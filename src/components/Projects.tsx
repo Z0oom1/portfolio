@@ -607,7 +607,7 @@ export default function Projects() {
                   </div>
 
                   {/* Sub-projects list */}
-                  <div className="max-w-xl mx-auto">
+                  <div className="max-w-xl mx-auto flex flex-col gap-8">
                     <ProjectCard 
                       title="AW IDEN"
                       category="Sistema de Identificação de Produtos"
@@ -625,6 +625,27 @@ export default function Projects() {
                           hoverColor: "wilson",
                           companyName: "Alimentos Wilson",
                           logoSrc: "https://www.alimentoswilson.com.br/imgs/logo-wilson.png"
+                        });
+                      }}
+                    />
+
+                    <ProjectCard 
+                      title="Controladoria AW"
+                      category="Sistema de Controle de Pátio & Estoque"
+                      description="Sistema completo de controle de pátio e estoque projetado para monitorar e gerenciar a entrada de caminhões pesados para descarga. Com software, site e aplicativo, otimizou processos de pátio e conferência de 25 minutos para apenas 40 segundos, integrando controle de mapas cegos, relatórios de divergência e dashboards gerenciais."
+                      tags={["Software", "Website", "Mobile App", "Gestão de Pátio", "Logística"]}
+                      videoSrc="/videos/controladoriaaw.mp4"
+                      hoverColor="wilson"
+                      layout="vertical"
+                      privacyRestricted={true}
+                      onRestrictedClick={() => {
+                        setSelectedRestricted({
+                          title: "Controladoria AW",
+                          description: "Sistema completo de controle de pátio e estoque projetado para monitorar e gerenciar a entrada de caminhões pesados para descarga. Com software, site e aplicativo, otimizou processos de pátio e conferência de 25 minutos para apenas 40 segundos, integrando controle de mapas cegos, relatórios de divergência e dashboards gerenciais.",
+                          videoSrc: "/videos/controladoriaaw.mp4",
+                          hoverColor: "wilson",
+                          companyName: "Alimentos Wilson",
+                          logoSrc: "/logo-sf.png"
                         });
                       }}
                     />
