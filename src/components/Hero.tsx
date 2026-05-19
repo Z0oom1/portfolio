@@ -68,16 +68,27 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full aspect-[4/5] md:aspect-square lg:aspect-[4/5] max-w-md mx-auto lg:ml-auto pointer-events-auto"
+            className="relative w-full aspect-[4/5] md:aspect-square lg:aspect-[4/5] max-w-md mx-auto lg:ml-auto pointer-events-auto group cursor-pointer"
           >
-            <div className="absolute inset-0 rounded-3xl overflow-hidden glass group cursor-pointer border border-white/10 hover:border-gold/30 hover:shadow-[0_0_35px_rgba(212,175,55,0.15)] transition-all duration-500">
+            {/* Background glowing gold aura */}
+            <div className="absolute -inset-1.5 bg-gradient-to-tr from-[#bf953f]/30 via-[#fcf6ba]/10 to-[#aa771c]/30 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none -z-10" />
+            
+            <div className="absolute inset-0 rounded-3xl overflow-hidden glass border border-white/10 group-hover:border-[#d4af37]/45 shadow-[0_0_25px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all duration-500 z-10">
               <img
                 src="/caio.png"
                 alt="Caio Rodrigues"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
               />
-              {/* Overlay styling for extra luxurious tint */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500" />
+              
+              {/* Premium golden light cast overlay to blend original photo colors with the page design */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#bf953f]/10 via-[#d4af37]/5 to-[#aa771c]/10 mix-blend-overlay opacity-90 transition-opacity duration-500 pointer-events-none" />
+              
+              {/* Dynamic light reflex sweeping over the image */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none" />
+
+              {/* Edge vignetting and bottom integration gradient */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_60%,rgba(0,0,0,0.4)_120%)] pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-80 pointer-events-none" />
             </div>
             
             {/* Decorator elements */}
