@@ -607,7 +607,7 @@ export default function Projects() {
                   </div>
 
                   {/* Sub-projects list */}
-                  <div className="max-w-xl mx-auto flex flex-col gap-8">
+                  <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                     <ProjectCard 
                       title="AW IDEN"
                       category="Sistema de Identificação de Produtos"
