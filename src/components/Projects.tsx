@@ -101,7 +101,8 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
             autoPlay={isMobile}
             className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-700 ease-out"
           >
-            <source src={`${videoSrc}#t=0.001`} type="video/webm" />
+            <source src={`${videoSrc.replace('.webm', '.mp4')}#t=0.001`} type="video/mp4" />
+            <source src={`${videoSrc.replace('.mp4', '.webm')}#t=0.001`} type="video/webm" />
           </video>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-surface to-surface-hover flex items-center justify-center relative transform group-hover:scale-105 transition-transform duration-700">
