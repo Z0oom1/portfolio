@@ -12,7 +12,7 @@ interface ProjectCardProps {
   videoSrc?: string;
   link?: string;
   delay?: number;
-  hoverColor?: "odonto" | "celular" | "academia" | "wilson" | "cebola" | "imports";
+  hoverColor?: "odonto" | "celular" | "academia" | "wilson" | "cebola" | "imports" | "sorriso";
   layout?: "horizontal" | "vertical";
   privacyRestricted?: boolean;
   onRestrictedClick?: () => void;
@@ -120,6 +120,10 @@ function ProjectCard({
     imports: {
       border: "group-hover:border-white/40",
       shadow: "group-hover:shadow-[0_0_25px_rgba(255,255,255,0.12)]",
+    },
+    sorriso: {
+      border: "group-hover:border-sky-500/40 group-hover:border-r-blue-600/40",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(56,189,248,0.15),0_0_25px_rgba(37,99,235,0.1)]",
     }
   };
 
@@ -177,6 +181,8 @@ function ProjectCard({
                 ? 'text-emerald-400'
                 : hoverColor === 'imports'
                 ? 'text-white/80 font-medium'
+                : hoverColor === 'sorriso'
+                ? 'text-sky-400'
                 : 'text-gold'
             } text-xs font-medium tracking-widest uppercase mb-2`}>{category}</p>
             <h3 className="text-2xl md:text-3xl font-heading font-medium text-foreground group-hover:text-white transition-colors">
@@ -194,6 +200,8 @@ function ProjectCard({
                 ? 'group-hover:bg-emerald-600 group-hover:border-emerald-600' 
                 : hoverColor === 'imports'
                 ? 'group-hover:bg-white group-hover:border-white group-hover:text-black'
+                : hoverColor === 'sorriso'
+                ? 'group-hover:bg-sky-500 group-hover:border-sky-500 group-hover:text-black'
                 : 'group-hover:bg-red-500 group-hover:border-red-500'
             }`}>
               {/* Lock icon */}
@@ -263,14 +271,15 @@ export default function Projects() {
   ];
 
   const otherProjects = [
-    "Alimentos Wilson", "M & M Cebolas", "Imports", "Renove", "etc..."
+    "Alimentos Wilson", "M & M Cebolas", "Imports", "Novo Sorriso", "Renove", "etc..."
   ];
 
   const [showAlimentosWilson, setShowAlimentosWilson] = useState(false);
   const [showCebolas, setShowCebolas] = useState(false);
   const [showImports, setShowImports] = useState(false);
+  const [showSorriso, setShowSorriso] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastColor, setToastColor] = useState<"red" | "emerald" | "white">("red");
+  const [toastColor, setToastColor] = useState<"red" | "emerald" | "white" | "sky">("red");
 
   // Auto-hide toast after 5 seconds
   useEffect(() => {
@@ -282,7 +291,7 @@ export default function Projects() {
     }
   }, [toastMessage]);
 
-  const triggerToast = (message: string, color: "red" | "emerald" | "white") => {
+  const triggerToast = (message: string, color: "red" | "emerald" | "white" | "sky") => {
     setToastColor(color);
     setToastMessage(message);
   };
@@ -327,6 +336,7 @@ export default function Projects() {
                 const isAlimentosWilson = name === "Alimentos Wilson";
                 const isCebolas = name === "M & M Cebolas";
                 const isImports = name === "Imports";
+                const isSorriso = name === "Novo Sorriso";
                 
                 if (isAlimentosWilson) {
                   return (
@@ -336,6 +346,7 @@ export default function Projects() {
                         setShowAlimentosWilson(!showAlimentosWilson);
                         setShowCebolas(false);
                         setShowImports(false);
+                        setShowSorriso(false);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -360,6 +371,7 @@ export default function Projects() {
                         setShowCebolas(!showCebolas);
                         setShowAlimentosWilson(false);
                         setShowImports(false);
+                        setShowSorriso(false);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -384,6 +396,7 @@ export default function Projects() {
                         setShowImports(!showImports);
                         setShowAlimentosWilson(false);
                         setShowCebolas(false);
+                        setShowSorriso(false);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -393,6 +406,31 @@ export default function Projects() {
                         showImports 
                           ? "bg-white/10 border-white/50 text-white shadow-[0_0_20px_rgba(255,255,255,0.3)]" 
                           : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-white hover:border-white/40 hover:bg-white/5 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
+                      }`}
+                    >
+                      {name}
+                    </motion.button>
+                  );
+                }
+
+                if (isSorriso) {
+                  return (
+                    <motion.button
+                      key={name}
+                      onClick={() => {
+                        setShowSorriso(!showSorriso);
+                        setShowAlimentosWilson(false);
+                        setShowCebolas(false);
+                        setShowImports(false);
+                      }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
+                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                        showSorriso 
+                          ? "bg-gradient-to-r from-sky-500/10 to-blue-600/10 border-l-sky-400 border-r-blue-600 border-t-sky-400 border-b-blue-600 border text-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.25),0_0_20px_rgba(37,99,235,0.15)]" 
+                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-sky-400 hover:border-sky-500/40 hover:bg-sky-500/5 hover:shadow-[0_0_15px_rgba(56,189,248,0.15)]"
                       }`}
                     >
                       {name}
@@ -551,6 +589,49 @@ export default function Projects() {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Novo Sorriso Expanded Section */}
+            <AnimatePresence>
+              {showSorriso && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 40 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden border-t border-white/5 pt-8"
+                >
+                  {/* Logo and Title */}
+                  <div className="flex flex-col items-center justify-center mb-8 gap-3">
+                    <motion.img 
+                      src="/logo.png" 
+                      alt="Novo Sorriso Logo"
+                      className="h-16 md:h-20 object-contain filter drop-shadow-[0_0_15px_rgba(56,189,248,0.25)]"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    />
+                    <p className="text-sky-400/80 text-[10px] font-semibold tracking-[0.2em] uppercase">
+                      Acesso Restrito / Gestão Clínica & Consultas
+                    </p>
+                  </div>
+
+                  {/* Sub-projects list */}
+                  <div className="max-w-xl mx-auto">
+                    <ProjectCard 
+                      title="Portal Odonto NS"
+                      category="Sistema de Gestão & Consultas"
+                      description="Software e site para a clínica odontológica Novo Sorriso. Trata-se de um sistema completo de controle de consultas e gestão interna que monitora os pacientes da clínica, integrado a um app e site onde o próprio cliente pode realizar agendamentos em dias disponibilizados pela administração."
+                      tags={["Software", "Website", "Mobile App", "Gestão Clínica"]}
+                      videoSrc="/videos/novosorriso.mp4"
+                      hoverColor="sorriso"
+                      layout="vertical"
+                      privacyRestricted={true}
+                      onRestrictedClick={() => triggerToast("O acesso ao Portal Odonto NS está restrito a funcionários autorizados e pacientes da Clínica Novo Sorriso.", "sky")}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </div>
@@ -567,6 +648,8 @@ export default function Projects() {
                 ? 'border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.25)]' 
                 : toastColor === 'white'
                 ? 'border-white/30 shadow-[0_0_30px_rgba(255,255,255,0.15)]'
+                : toastColor === 'sky'
+                ? 'border-sky-500/30 shadow-[0_0_30px_rgba(56,189,248,0.25)]'
                 : 'border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]'
             }`}
           >
@@ -575,6 +658,8 @@ export default function Projects() {
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                 : toastColor === 'white'
                 ? 'bg-white/10 border-white/30 text-white'
+                : toastColor === 'sky'
+                ? 'bg-sky-500/10 border-sky-500/30 text-sky-400'
                 : 'bg-red-500/10 border-red-500/30 text-red-500'
             }`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -588,6 +673,8 @@ export default function Projects() {
                   ? 'text-emerald-400' 
                   : toastColor === 'white'
                   ? 'text-white'
+                  : toastColor === 'sky'
+                  ? 'text-sky-400'
                   : 'text-red-500'
               }`}>Acesso Restrito</h4>
               <p className="text-foreground/70 font-light text-xs mt-1">{toastMessage}</p>
