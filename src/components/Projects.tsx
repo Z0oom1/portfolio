@@ -12,9 +12,10 @@ interface ProjectCardProps {
   videoSrc?: string;
   link?: string;
   delay?: number;
+  hoverColor?: "odonto" | "celular" | "academia";
 }
 
-function ProjectCard({ title, category, description, tags, videoSrc, link, delay = 0 }: ProjectCardProps) {
+function ProjectCard({ title, category, description, tags, videoSrc, link, delay = 0, hoverColor }: ProjectCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -80,6 +81,21 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
 
   const displayName = title.startsWith("Modelo ") ? title.replace("Modelo ", "") : title;
 
+  const colorMap = {
+    odonto: {
+      border: "group-hover:border-[#FAF9F6]/40",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(250,249,246,0.12)]",
+    },
+    celular: {
+      border: "group-hover:border-[#FF5C00]/50",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(255,92,0,0.15)]",
+    },
+    academia: {
+      border: "group-hover:border-[#00D2FF]/50",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(0,210,255,0.15)]",
+    }
+  };
+
   const content = (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -94,7 +110,9 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       
       {/* Video / Visual Section */}
-      <div className="w-full md:w-2/5 aspect-[4/3] md:aspect-auto md:h-64 rounded-2xl overflow-hidden bg-surface-hover relative border border-white/5 z-10">
+      <div className={`w-full md:w-2/5 aspect-[4/3] md:aspect-auto md:h-64 rounded-2xl overflow-hidden bg-surface-hover relative border border-white/5 transition-all duration-500 ease-out z-10 ${
+        hoverColor ? `${colorMap[hoverColor].border} ${colorMap[hoverColor].shadow}` : "group-hover:border-gold/30"
+      }`}>
         {videoSrc && !videoError ? (
           <video
             ref={videoRef}
@@ -160,14 +178,15 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
 }
 
 export default function Projects() {
-  const featuredProjects = [
+  const featuredProjects: ProjectCardProps[] = [
     {
       title: "Modelo Loja Celular",
       category: "E-Commerce",
       description: "Plataforma de vendas focada em alta conversão com design refinado, animações suaves e experiência de compra exclusiva para produtos de tecnologia.",
       tags: ["UI/UX", "Website", "Next.js", "Framer Motion"],
       videoSrc: "/videos/celular.webm",
-      link: "https://website-loja-celulares.vercel.app/"
+      link: "https://website-loja-celulares.vercel.app/",
+      hoverColor: "celular"
     },
     {
       title: "Modelo Odonto",
@@ -175,7 +194,8 @@ export default function Projects() {
       description: "Website profissional para clínica odontológica focada em estética de alto padrão, transmitindo luxo, credibilidade e cuidado.",
       tags: ["Website", "Branding", "React", "TailwindCSS"],
       videoSrc: "/videos/odonto.webm",
-      link: "https://modelo-odonto.vercel.app"
+      link: "https://modelo-odonto.vercel.app",
+      hoverColor: "odonto"
     },
     {
       title: "Modelo Academia",
@@ -183,7 +203,8 @@ export default function Projects() {
       description: "Website de alto padrão focado em alta performance para academias e centros fitness, projetado para atração de novos alunos, planos estruturados, infraestrutura e agendamentos.",
       tags: ["Website", "Branding", "HTML5", "CSS3", "JavaScript"],
       videoSrc: "/videos/academia.webm",
-      link: "https://modelo-academia-website.vercel.app"
+      link: "https://modelo-academia-website.vercel.app",
+      hoverColor: "academia"
     }
   ];
 
