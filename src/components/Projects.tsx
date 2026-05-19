@@ -634,22 +634,14 @@ export default function Projects() {
                 >
                   {/* Logo and Title */}
                   <div className="flex flex-col items-center justify-center mb-8 gap-3">
-                    <svg viewBox="0 0 24 24" className="w-14 h-14 filter drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <defs>
-                        <linearGradient id="cebolaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#059669" />
-                          <stop offset="100%" stopColor="#d97706" />
-                        </linearGradient>
-                      </defs>
-                      <path d="M12 2C8.5 6.5 6 10 6 14C6 17.5 8.5 20.5 12 20.5C15.5 20.5 18 17.5 18 14C18 10 15.5 6.5 12 2Z" fill="url(#cebolaGrad)" opacity="0.15" />
-                      <path d="M12 2C8.5 6.5 6 10 6 14C6 17.5 8.5 20.5 12 20.5C15.5 20.5 18 17.5 18 14C18 10 15.5 6.5 12 2Z" stroke="url(#cebolaGrad)" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M12 2.5C10.2 7 8.5 10.5 8.5 14C8.5 17 10 19.5 12 19.5" stroke="url(#cebolaGrad)" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M12 2.5C13.8 7 15.5 10.5 15.5 14C15.5 17 14 19.5 12 19.5" stroke="url(#cebolaGrad)" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M10 20.5V22M12 20.5V22.5M14 20.5V22" stroke="url(#cebolaGrad)" strokeLinecap="round" />
-                    </svg>
-                    <h3 className="text-xl font-heading font-medium tracking-wide uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-amber-500 mt-1">
-                      M & M Cebolas
-                    </h3>
+                    <motion.img 
+                      src="/Logo_M&M_Cebolas.png" 
+                      alt="M & M Cebolas Logo"
+                      className="h-16 md:h-20 object-contain filter drop-shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    />
                     <p className="text-emerald-500/80 text-[10px] font-semibold tracking-[0.2em] uppercase">
                       Acesso Restrito / Sistemas de Gestão Agrícola
                     </p>
@@ -673,7 +665,7 @@ export default function Projects() {
                           videoSrc: "/videos/cebolas.mp4",
                           hoverColor: "cebola",
                           companyName: "M & M Cebolas",
-                          isSvgLogo: true
+                          logoSrc: "/Logo_M&M_Cebolas.png"
                         });
                       }}
                     />
@@ -821,13 +813,24 @@ export default function Projects() {
               {!isPlayingPreview ? (
                 /* 1. Privacy Blocking & Preview Launch Screen */
                 <div className="p-8 md:p-12 flex flex-col items-center text-center">
-                  {/* Lock circle icon with pulsing shadow */}
-                  <div className={`w-16 h-16 rounded-full border flex items-center justify-center mb-6 animate-pulse ${themeMap[selectedRestricted.hoverColor].iconBg}`}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                  </div>
+                  {/* Pulsing Lock Icon or Official Brand Logo */}
+                  {selectedRestricted.logoSrc ? (
+                    <motion.img 
+                      src={selectedRestricted.logoSrc}
+                      alt={selectedRestricted.companyName}
+                      className="h-16 md:h-20 object-contain mb-6 filter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4 }}
+                    />
+                  ) : (
+                    <div className={`w-16 h-16 rounded-full border flex items-center justify-center mb-6 animate-pulse ${themeMap[selectedRestricted.hoverColor].iconBg}`}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                    </div>
+                  )}
 
                   <span className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 ${themeMap[selectedRestricted.hoverColor].text}`}>
                     {selectedRestricted.companyName}
