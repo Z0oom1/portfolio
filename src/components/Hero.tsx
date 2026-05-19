@@ -63,30 +63,26 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right Column - Photo Placeholder */}
+          {/* Right Column - Photo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full aspect-[4/5] md:aspect-square lg:aspect-[4/5] max-w-md mx-auto lg:ml-auto"
+            className="relative w-full aspect-[4/5] md:aspect-square lg:aspect-[4/5] max-w-md mx-auto lg:ml-auto pointer-events-auto"
           >
-            <div className="absolute inset-0 rounded-3xl overflow-hidden glass group cursor-pointer">
-              <div className="absolute inset-0 bg-gradient-to-tr from-surface to-surface-hover transition-colors duration-500 group-hover:to-white/5" />
-              {/* Optional border glow on hover */}
-              <div className="absolute inset-0 border border-white/10 rounded-3xl transition-colors duration-500 group-hover:border-gold/30" />
-              
-              {/* Content of the placeholder */}
-              <div className="absolute inset-0 flex items-center justify-center text-foreground/30 font-light flex-col gap-4 transition-all duration-500 group-hover:text-[#d4af37]/80 group-hover:scale-105">
-                <div className="w-16 h-16 rounded-full border border-current flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0)] group-hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all duration-500">
-                  <span className="text-2xl font-heading">CR</span>
-                </div>
-                <span className="text-sm tracking-widest uppercase">Espaço para Retrato</span>
-              </div>
+            <div className="absolute inset-0 rounded-3xl overflow-hidden glass group cursor-pointer border border-white/10 hover:border-gold/30 hover:shadow-[0_0_35px_rgba(212,175,55,0.15)] transition-all duration-500">
+              <img
+                src="/caio.png"
+                alt="Caio Rodrigues"
+                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+              />
+              {/* Overlay styling for extra luxurious tint */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500" />
             </div>
             
             {/* Decorator elements */}
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gold/10 rounded-full blur-2xl" />
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gold/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
           </motion.div>
         </div>
       </div>
