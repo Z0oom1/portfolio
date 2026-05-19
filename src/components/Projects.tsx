@@ -12,7 +12,7 @@ interface ProjectCardProps {
   videoSrc?: string;
   link?: string;
   delay?: number;
-  hoverColor?: "odonto" | "celular" | "academia" | "wilson";
+  hoverColor?: "odonto" | "celular" | "academia" | "wilson" | "cebola";
   layout?: "horizontal" | "vertical";
   privacyRestricted?: boolean;
   onRestrictedClick?: () => void;
@@ -112,6 +112,10 @@ function ProjectCard({
     wilson: {
       border: "group-hover:border-red-500/50",
       shadow: "group-hover:shadow-[0_0_25px_rgba(239,68,68,0.25)]",
+    },
+    cebola: {
+      border: "group-hover:border-emerald-500/40 group-hover:border-r-amber-500/40",
+      shadow: "group-hover:shadow-[0_0_25px_rgba(16,185,129,0.15),0_0_25px_rgba(245,158,11,0.1)]",
     }
   };
 
@@ -122,7 +126,7 @@ function ProjectCard({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
       onClick={privacyRestricted ? onRestrictedClick : undefined}
-      className={`group relative flex ${layout === "vertical" ? "flex-col" : "flex-col md:flex-row"} gap-8 p-6 md:p-8 rounded-3xl glass border border-white/5 hover:border-gold/30 transition-all duration-500 overflow-hidden ${
+      className={`group relative flex ${layout === "vertical" ? "flex-col" : "flex-col md:flex-row"} gap-8 p-6 md:p-8 rounded-3xl glass border border-white/5 transition-all duration-500 overflow-hidden ${
         privacyRestricted ? "cursor-pointer" : ""
       } ${
         hoverColor ? `${colorMap[hoverColor].border} ${colorMap[hoverColor].shadow}` : "group-hover:border-gold/30"
@@ -163,7 +167,13 @@ function ProjectCard({
       <div className={`w-full ${layout === "vertical" ? "" : "md:w-3/5"} flex flex-col justify-center relative z-10`}>
         <div className="flex justify-between items-start mb-4">
           <div>
-            <p className={`${hoverColor === 'wilson' ? 'text-red-500' : 'text-gold'} text-xs font-medium tracking-widest uppercase mb-2`}>{category}</p>
+            <p className={`${
+              hoverColor === 'wilson' 
+                ? 'text-red-500' 
+                : hoverColor === 'cebola'
+                ? 'text-emerald-400'
+                : 'text-gold'
+            } text-xs font-medium tracking-widest uppercase mb-2`}>{category}</p>
             <h3 className="text-2xl md:text-3xl font-heading font-medium text-foreground group-hover:text-white transition-colors">
               {title}
             </h3>
@@ -174,7 +184,11 @@ function ProjectCard({
             </div>
           )}
           {privacyRestricted && (
-            <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-red-500 group-hover:border-red-500 transition-all duration-300 transform group-hover:scale-110">
+            <div className={`w-12 h-12 rounded-full border border-white/10 flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 ${
+              hoverColor === 'cebola' 
+                ? 'group-hover:bg-emerald-600 group-hover:border-emerald-600' 
+                : 'group-hover:bg-red-500 group-hover:border-red-500'
+            }`}>
               {/* Lock icon */}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-foreground group-hover:text-white transition-colors">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -246,7 +260,9 @@ export default function Projects() {
   ];
 
   const [showAlimentosWilson, setShowAlimentosWilson] = useState(false);
+  const [showCebolas, setShowCebolas] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastColor, setToastColor] = useState<"red" | "emerald">("red");
 
   // Auto-hide toast after 5 seconds
   useEffect(() => {
@@ -257,6 +273,11 @@ export default function Projects() {
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
+
+  const triggerToast = (message: string, color: "red" | "emerald") => {
+    setToastColor(color);
+    setToastMessage(message);
+  };
 
   return (
     <section id="projetos" className="py-32 relative">
@@ -296,11 +317,16 @@ export default function Projects() {
             <div className="flex flex-wrap gap-4">
               {otherProjects.map((name, i) => {
                 const isAlimentosWilson = name === "Alimentos Wilson";
+                const isCebolas = name === "M & M Cebolas";
+                
                 if (isAlimentosWilson) {
                   return (
                     <motion.button
                       key={name}
-                      onClick={() => setShowAlimentosWilson(!showAlimentosWilson)}
+                      onClick={() => {
+                        setShowAlimentosWilson(!showAlimentosWilson);
+                        setShowCebolas(false);
+                      }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
@@ -315,6 +341,30 @@ export default function Projects() {
                     </motion.button>
                   );
                 }
+                
+                if (isCebolas) {
+                  return (
+                    <motion.button
+                      key={name}
+                      onClick={() => {
+                        setShowCebolas(!showCebolas);
+                        setShowAlimentosWilson(false);
+                      }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
+                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                        showCebolas 
+                          ? "bg-gradient-to-r from-emerald-500/10 to-amber-500/10 border-l-emerald-500 border-r-amber-500 border-t-emerald-500 border-b-amber-500 border text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.25),0_0_20px_rgba(245,158,11,0.15)]" 
+                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-emerald-400 hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                      }`}
+                    >
+                      {name}
+                    </motion.button>
+                  );
+                }
+                
                 return (
                   <motion.div
                     key={name}
@@ -366,7 +416,58 @@ export default function Projects() {
                       hoverColor="wilson"
                       layout="vertical"
                       privacyRestricted={true}
-                      onRestrictedClick={() => setToastMessage("O acesso ao projeto AW IDEN está fechado por motivos de privacidade e segurança da Alimentos Wilson.")}
+                      onRestrictedClick={() => triggerToast("O acesso ao projeto AW IDEN está fechado por motivos de privacidade e segurança da Alimentos Wilson.", "red")}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* M & M Cebolas Expanded Section */}
+            <AnimatePresence>
+              {showCebolas && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 40 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden border-t border-white/5 pt-8"
+                >
+                  {/* Logo and Title */}
+                  <div className="flex flex-col items-center justify-center mb-8 gap-3">
+                    <svg viewBox="0 0 24 24" className="w-14 h-14 filter drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <defs>
+                        <linearGradient id="cebolaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#059669" />
+                          <stop offset="100%" stopColor="#d97706" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M12 2C8.5 6.5 6 10 6 14C6 17.5 8.5 20.5 12 20.5C15.5 20.5 18 17.5 18 14C18 10 15.5 6.5 12 2Z" fill="url(#cebolaGrad)" opacity="0.15" />
+                      <path d="M12 2C8.5 6.5 6 10 6 14C6 17.5 8.5 20.5 12 20.5C15.5 20.5 18 17.5 18 14C18 10 15.5 6.5 12 2Z" stroke="url(#cebolaGrad)" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 2.5C10.2 7 8.5 10.5 8.5 14C8.5 17 10 19.5 12 19.5" stroke="url(#cebolaGrad)" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 2.5C13.8 7 15.5 10.5 15.5 14C15.5 17 14 19.5 12 19.5" stroke="url(#cebolaGrad)" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M10 20.5V22M12 20.5V22.5M14 20.5V22" stroke="url(#cebolaGrad)" strokeLinecap="round" />
+                    </svg>
+                    <h3 className="text-xl font-heading font-medium tracking-wide uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-amber-500 mt-1">
+                      M & M Cebolas
+                    </h3>
+                    <p className="text-emerald-500/80 text-[10px] font-semibold tracking-[0.2em] uppercase">
+                      Acesso Restrito / Sistemas de Gestão Agrícola
+                    </p>
+                  </div>
+
+                  {/* Sub-projects list */}
+                  <div className="max-w-xl mx-auto">
+                    <ProjectCard 
+                      title="Portal M&M"
+                      category="Sistema de Controle & Vendas"
+                      description="Sistema corporativo avançado para controle de estoque, compras, vendas de cebolas e produtos agrícolas, integrando faturamento de notas fiscais e software dedicado."
+                      tags={["Estoque", "AgroTech", "Nota Fiscal", "ERP Corporativo"]}
+                      videoSrc="/videos/cebolas.webm"
+                      hoverColor="cebola"
+                      layout="vertical"
+                      privacyRestricted={true}
+                      onRestrictedClick={() => triggerToast("O acesso ao Portal M&M está fechado por motivos de privacidade e segredo comercial da M & M Cebolas.", "emerald")}
                     />
                   </div>
                 </motion.div>
@@ -383,16 +484,26 @@ export default function Projects() {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-5 rounded-2xl glass border border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)] max-w-sm flex items-center gap-4"
+            className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 p-5 rounded-2xl glass border shadow-[0_0_30px_rgba(16,185,129,0.2)] max-w-sm flex items-center gap-4 ${
+              toastColor === 'emerald' 
+                ? 'border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.25)]' 
+                : 'border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]'
+            }`}
           >
-            <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 shrink-0">
+            <div className={`w-10 h-10 rounded-full border flex items-center justify-center shrink-0 ${
+              toastColor === 'emerald'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : 'bg-red-500/10 border-red-500/30 text-red-500'
+            }`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
             </div>
             <div>
-              <h4 className="text-red-500 font-heading font-medium text-sm">Acesso Restrito</h4>
+              <h4 className={`font-heading font-medium text-sm ${
+                toastColor === 'emerald' ? 'text-emerald-400' : 'text-red-500'
+              }`}>Acesso Restrito</h4>
               <p className="text-foreground/70 font-light text-xs mt-1">{toastMessage}</p>
             </div>
           </motion.div>
