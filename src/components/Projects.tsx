@@ -155,8 +155,7 @@ function ProjectCard({
             onError={() => setVideoError(true)}
             className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-700 ease-out"
           >
-            <source src={`${videoSrc.replace('.webm', '.mp4')}#t=0.001`} type="video/mp4" />
-            <source src={`${videoSrc.replace('.mp4', '.webm')}#t=0.001`} type="video/webm" onError={() => setVideoError(true)} />
+            <source src={`${videoSrc}#t=0.001`} type="video/mp4" />
           </video>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-surface to-surface-hover flex items-center justify-center relative transform group-hover:scale-105 transition-transform duration-700">
@@ -239,7 +238,7 @@ export default function Projects() {
       category: "E-Commerce",
       description: "Plataforma de vendas focada em alta conversão com design refinado, animações suaves e experiência de compra exclusiva para produtos de tecnologia.",
       tags: ["UI/UX", "Website", "Next.js", "Framer Motion"],
-      videoSrc: "/videos/celular.webm",
+      videoSrc: "/videos/celular.mp4",
       link: "https://website-loja-celulares.vercel.app/",
       hoverColor: "celular"
     },
@@ -248,7 +247,7 @@ export default function Projects() {
       category: "Institucional",
       description: "Website profissional para clínica odontológica focada em estética de alto padrão, transmitindo luxo, credibilidade e cuidado.",
       tags: ["Website", "Branding", "React", "TailwindCSS"],
-      videoSrc: "/videos/odonto.webm",
+      videoSrc: "/videos/odonto.mp4",
       link: "https://modelo-odonto.vercel.app",
       hoverColor: "odonto"
     },
@@ -257,7 +256,7 @@ export default function Projects() {
       category: "Institucional / Fitness",
       description: "Website de alto padrão focado em alta performance para academias e centros fitness, projetado para atração de novos alunos, planos estruturados, infraestrutura e agendamentos.",
       tags: ["Website", "Branding", "HTML5", "CSS3", "JavaScript"],
-      videoSrc: "/videos/academia.webm",
+      videoSrc: "/videos/academia.mp4",
       link: "https://modelo-academia-website.vercel.app",
       hoverColor: "academia"
     }
@@ -448,7 +447,7 @@ export default function Projects() {
                       category="Sistema de Identificação de Produtos"
                       description="Sistema avançado de controle e identificação de produtos utilizado pelo almoxarifado da Alimentos Wilson, integrando e gerenciando todo o estoque de forma ágil e segura."
                       tags={["Logística", "Estoque", "AW Almoxarifado", "Segurança"]}
-                      videoSrc="/videos/iden.webm"
+                      videoSrc="/videos/iden.mp4"
                       hoverColor="wilson"
                       layout="vertical"
                       privacyRestricted={true}
@@ -499,7 +498,7 @@ export default function Projects() {
                       category="Sistema de Controle & Vendas"
                       description="Sistema corporativo avançado para controle de estoque, compras, vendas de cebolas e produtos agrícolas, integrando faturamento de notas fiscais e software dedicado."
                       tags={["Estoque", "AgroTech", "Nota Fiscal", "ERP Corporativo"]}
-                      videoSrc="/videos/cebolas.webm"
+                      videoSrc="/videos/cebolas.mp4"
                       hoverColor="cebola"
                       layout="vertical"
                       privacyRestricted={true}
@@ -542,7 +541,7 @@ export default function Projects() {
                       category="Sistema de Controle & Vendas"
                       description="Sistema completo de controle de estoque de uma loja de celulares e venda de produtos Apple, permitindo gerenciar o exato modelo, cor e informações de cada aparelho, além de registrar e rastrear defeitos físicos de produtos seminovos/usados."
                       tags={["Estoque", "Loja de Celular", "Apple Control", "ERP Comercial"]}
-                      videoSrc="/videos/imports.webm"
+                      videoSrc="/videos/imports.mp4"
                       hoverColor="imports"
                       layout="vertical"
                       privacyRestricted={true}
