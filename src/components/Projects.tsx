@@ -288,7 +288,6 @@ export default function Projects() {
   const [showCebolas, setShowCebolas] = useState(false);
   const [showImports, setShowImports] = useState(false);
   const [showSorriso, setShowSorriso] = useState(false);
-  const [hasClickedWilson, setHasClickedWilson] = useState(false);
 
   // Restricted Project Preview States
   const [selectedRestricted, setSelectedRestricted] = useState<RestrictedProjectData | null>(null);
@@ -449,16 +448,29 @@ export default function Projects() {
           ))}
           
           <motion.div 
+            id="principais-clientes"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="p-8 rounded-3xl glass border border-white/5 relative overflow-hidden group"
+            className="p-8 md:p-12 rounded-3xl glass border border-white/5 relative overflow-hidden group scroll-mt-24"
           >
             <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-            <h3 className="text-xl font-heading font-medium text-foreground mb-6 flex items-center gap-3">
-              Outras colaborações e sistemas <span className="h-[1px] flex-1 bg-gradient-to-r from-white/20 to-transparent block ml-4"></span>
-            </h3>
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h3 className="text-2xl font-heading font-semibold tracking-wide text-white">
+                  PRINCIPAIS CLIENTES
+                </h3>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase bg-gold/10 border border-gold/30 text-gold animate-[pulse_2s_infinite]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold animate-ping"></span>
+                  Clique para Expandir
+                </span>
+              </div>
+              <p className="text-foreground/50 text-xs font-light max-w-sm">
+                Selecione uma empresa abaixo para visualizar os respectivos sistemas de gestão interna e demonstrações de produção.
+              </p>
+            </div>
             
             <div className="flex flex-wrap gap-4">
               {otherProjects.map((name, i) => {
@@ -476,36 +488,17 @@ export default function Projects() {
                         setShowCebolas(false);
                         setShowImports(false);
                         setShowSorriso(false);
-                        setHasClickedWilson(true);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                      transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className={`px-6 py-3 rounded-full font-medium text-sm md:text-base transition-all duration-500 cursor-pointer ${
                         showAlimentosWilson 
                           ? "bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]" 
-                          : !hasClickedWilson
-                          ? "bg-red-500/5 border border-red-500/30 text-red-400"
-                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-red-400 hover:border-red-500/40 hover:bg-red-500/5 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)]"
+                          : "bg-surface-hover border border-red-500/20 text-foreground/80 hover:text-red-400 hover:border-red-500/60 hover:bg-red-500/5 hover:shadow-[0_0_15px_rgba(239,68,68,0.2)]"
                       }`}
-                      animate={(!hasClickedWilson && !showAlimentosWilson) ? {
-                        boxShadow: [
-                          "0 0 0px rgba(239, 68, 68, 0)",
-                          "0 0 15px rgba(239, 68, 68, 0.45)",
-                          "0 0 0px rgba(239, 68, 68, 0)"
-                        ],
-                        borderColor: [
-                          "rgba(239, 68, 68, 0.15)",
-                          "rgba(239, 68, 68, 0.6)",
-                          "rgba(239, 68, 68, 0.15)"
-                        ]
-                      } : {}}
-                      transition={{
-                        delay: (showAlimentosWilson || hasClickedWilson) ? 0 : 0.5 + (i * 0.05),
-                        duration: (!hasClickedWilson && !showAlimentosWilson) ? 1.8 : 0.4,
-                        repeat: (!hasClickedWilson && !showAlimentosWilson) ? Infinity : 0,
-                        ease: "easeInOut"
-                      }}
                     >
                       {name}
                     </motion.button>
@@ -526,10 +519,11 @@ export default function Projects() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
-                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className={`px-6 py-3 rounded-full font-medium text-sm md:text-base transition-all duration-500 cursor-pointer ${
                         showCebolas 
                           ? "bg-gradient-to-r from-emerald-500/10 to-amber-500/10 border-l-emerald-500 border-r-amber-500 border-t-emerald-500 border-b-amber-500 border text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.25),0_0_20px_rgba(245,158,11,0.15)]" 
-                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-emerald-400 hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                          : "bg-surface-hover border border-emerald-500/20 text-foreground/80 hover:text-emerald-400 hover:border-emerald-500/60 hover:bg-emerald-500/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
                       }`}
                     >
                       {name}
@@ -551,10 +545,11 @@ export default function Projects() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
-                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className={`px-6 py-3 rounded-full font-medium text-sm md:text-base transition-all duration-500 cursor-pointer ${
                         showImports 
-                          ? "bg-white/10 border-white/50 text-white shadow-[0_0_20px_rgba(255,255,255,0.3)]" 
-                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-white hover:border-white/40 hover:bg-white/5 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
+                          ? "bg-white/15 border-white/60 text-white shadow-[0_0_20px_rgba(255,255,255,0.3)]" 
+                          : "bg-surface-hover border border-white/10 text-foreground/80 hover:text-white hover:border-white/50 hover:bg-white/5 hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]"
                       }`}
                     >
                       {name}
@@ -576,10 +571,11 @@ export default function Projects() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
-                      className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      className={`px-6 py-3 rounded-full font-medium text-sm md:text-base transition-all duration-500 cursor-pointer ${
                         showSorriso 
                           ? "bg-gradient-to-r from-sky-500/10 to-blue-600/10 border-l-sky-400 border-r-blue-600 border-t-sky-400 border-b-blue-600 border text-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.25),0_0_20px_rgba(37,99,235,0.15)]" 
-                          : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-sky-400 hover:border-sky-500/40 hover:bg-sky-500/5 hover:shadow-[0_0_15px_rgba(56,189,248,0.15)]"
+                          : "bg-surface-hover border border-sky-500/20 text-foreground/80 hover:text-sky-400 hover:border-sky-500/60 hover:bg-sky-500/5 hover:shadow-[0_0_15px_rgba(56,189,248,0.2)]"
                       }`}
                     >
                       {name}
