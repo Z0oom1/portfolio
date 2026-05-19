@@ -288,6 +288,7 @@ export default function Projects() {
   const [showCebolas, setShowCebolas] = useState(false);
   const [showImports, setShowImports] = useState(false);
   const [showSorriso, setShowSorriso] = useState(false);
+  const [hasClickedWilson, setHasClickedWilson] = useState(false);
 
   // Restricted Project Preview States
   const [selectedRestricted, setSelectedRestricted] = useState<RestrictedProjectData | null>(null);
@@ -475,16 +476,36 @@ export default function Projects() {
                         setShowCebolas(false);
                         setShowImports(false);
                         setShowSorriso(false);
+                        setHasClickedWilson(true);
                       }}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.5 + (i * 0.05), duration: 0.4 }}
                       className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-500 cursor-pointer ${
                         showAlimentosWilson 
                           ? "bg-red-500/10 border-red-500/50 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]" 
+                          : !hasClickedWilson
+                          ? "bg-red-500/5 border border-red-500/30 text-red-400"
                           : "bg-surface-hover border border-white/5 text-foreground/70 hover:text-red-400 hover:border-red-500/40 hover:bg-red-500/5 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)]"
                       }`}
+                      animate={(!hasClickedWilson && !showAlimentosWilson) ? {
+                        boxShadow: [
+                          "0 0 0px rgba(239, 68, 68, 0)",
+                          "0 0 15px rgba(239, 68, 68, 0.45)",
+                          "0 0 0px rgba(239, 68, 68, 0)"
+                        ],
+                        borderColor: [
+                          "rgba(239, 68, 68, 0.15)",
+                          "rgba(239, 68, 68, 0.6)",
+                          "rgba(239, 68, 68, 0.15)"
+                        ]
+                      } : {}}
+                      transition={{
+                        delay: (showAlimentosWilson || hasClickedWilson) ? 0 : 0.5 + (i * 0.05),
+                        duration: (!hasClickedWilson && !showAlimentosWilson) ? 1.8 : 0.4,
+                        repeat: (!hasClickedWilson && !showAlimentosWilson) ? Infinity : 0,
+                        ease: "easeInOut"
+                      }}
                     >
                       {name}
                     </motion.button>
