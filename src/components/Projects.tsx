@@ -524,7 +524,7 @@ export default function Projects() {
                     <motion.img 
                       src="/imports.png" 
                       alt="Imports Logo"
-                      className="h-14 md:h-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                      className="h-20 md:h-24 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5 }}
