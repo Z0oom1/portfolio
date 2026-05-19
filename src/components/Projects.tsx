@@ -327,14 +327,25 @@ export default function Projects() {
   };
 
   const toggleFullscreen = () => {
-    if (previewVideoRef.current) {
-      if (previewVideoRef.current.requestFullscreen) {
-        previewVideoRef.current.requestFullscreen();
-      } else if ((previewVideoRef.current as any).webkitRequestFullscreen) {
-        (previewVideoRef.current as any).webkitRequestFullscreen();
-      } else if ((previewVideoRef.current as any).mozRequestFullScreen) {
-        (previewVideoRef.current as any).mozRequestFullScreen();
+    const video = previewVideoRef.current;
+    if (!video) return;
+
+    try {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if ((video as any).webkitEnterFullscreen) {
+        // iOS Safari/Chrome on iPhone - requires webkitEnterFullscreen on video element
+        (video as any).webkitEnterFullscreen();
+      } else if ((video as any).webkitRequestFullscreen) {
+        // iPad / macOS Safari / Chrome
+        (video as any).webkitRequestFullscreen();
+      } else if ((video as any).mozRequestFullScreen) {
+        (video as any).mozRequestFullScreen();
+      } else if ((video as any).msRequestFullscreen) {
+        (video as any).msRequestFullscreen();
       }
+    } catch (error) {
+      console.error("Erro ao abrir tela cheia:", error);
     }
   };
 
