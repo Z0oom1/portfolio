@@ -17,6 +17,7 @@ interface ProjectCardProps {
 function ProjectCard({ title, category, description, tags, videoSrc, link, delay = 0 }: ProjectCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -77,6 +78,8 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
     }
   };
 
+  const displayName = title.startsWith("Modelo ") ? title.replace("Modelo ", "") : title;
+
   const content = (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -92,22 +95,23 @@ function ProjectCard({ title, category, description, tags, videoSrc, link, delay
       
       {/* Video / Visual Section */}
       <div className="w-full md:w-2/5 aspect-[4/3] md:aspect-auto md:h-64 rounded-2xl overflow-hidden bg-surface-hover relative border border-white/5 z-10">
-        {videoSrc ? (
+        {videoSrc && !videoError ? (
           <video
             ref={videoRef}
             muted
             loop
             playsInline
             autoPlay={isMobile}
+            onError={() => setVideoError(true)}
             className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-700 ease-out"
           >
-            <source src={`${videoSrc.replace('.webm', '.mp4')}#t=0.001`} type="video/mp4" />
-            <source src={`${videoSrc.replace('.mp4', '.webm')}#t=0.001`} type="video/webm" />
+            <source src={`${videoSrc.replace('.webm', '.mp4')}#t=0.001`} type="video/mp4" onError={() => setVideoError(true)} />
+            <source src={`${videoSrc.replace('.mp4', '.webm')}#t=0.001`} type="video/webm" onError={() => setVideoError(true)} />
           </video>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-surface to-surface-hover flex items-center justify-center relative transform group-hover:scale-105 transition-transform duration-700">
              <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-             <span className="text-foreground/20 font-heading text-xl uppercase tracking-widest group-hover:text-gold/40 transition-colors duration-500">{title.split(' ')[0]}</span>
+             <span className="text-foreground/20 font-heading text-xl uppercase tracking-widest group-hover:text-gold/40 transition-colors duration-500">{displayName}</span>
           </div>
         )}
         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
@@ -172,6 +176,14 @@ export default function Projects() {
       tags: ["Website", "Branding", "React", "TailwindCSS"],
       videoSrc: "/videos/odonto.webm",
       link: "https://modelo-odonto.vercel.app"
+    },
+    {
+      title: "Modelo Academia",
+      category: "Institucional / Fitness",
+      description: "Website de alto padrão focado em alta performance para academias e centros fitness, projetado para atração de novos alunos, planos estruturados, infraestrutura e agendamentos.",
+      tags: ["Website", "Branding", "HTML5", "CSS3", "JavaScript"],
+      videoSrc: "/videos/academia.webm",
+      link: "https://modelo-academia-website.vercel.app"
     }
   ];
 
